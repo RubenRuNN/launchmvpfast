@@ -1,6 +1,7 @@
 import { relations, sql } from "drizzle-orm";
 import {
     boolean,
+    decimal,
     index,
     integer,
     jsonb,
@@ -243,8 +244,6 @@ export const orgRequestsRelations = relations(orgRequests, ({ one }) => ({
 
 export const orgRequestInsertSchema = createInsertSchema(orgRequests);
 
-// Feedback schema
-
 export const feedbackLabelEnum = pgEnum("feedback-label", [
     "Issue",
     "Idea",
@@ -347,3 +346,156 @@ export const waitlistUsersSchema = createInsertSchema(waitlistUsers, {
     email: z.string().email("Email must be a valid email address"),
     name: z.string().min(3, "Name must be at least 3 characters long"),
 });
+
+export const customers = createTable("customer", {
+    id: varchar("id", { length: 255 })
+        .notNull()
+        .primaryKey()
+        .default(sql`gen_random_uuid()`),
+    name: varchar("name", { length: 255 }).notNull(),
+    email: varchar("email", { length: 255 }).notNull(),
+    phone: varchar("phone", { length: 20 }).notNull(),
+    notes: text("notes"),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+});
+
+export const customerSchema = createInsertSchema(customers, {
+    name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
+    email: z.string().email("Email inválido"),
+    phone: z.string().min(10, "Telefone inválido"),
+    notes: z.string().optional(),
+});
+
+export const reservationStatusEnum = pgEnum("reservation_status", [
+    "confirmed",
+    "canceled", 
+    "checked_in",
+    "checked_out"
+]);
+
+export const rooms = createTable("room", {
+    id: varchar("id", { length: 255 })
+        .notNull()
+        .primaryKey()
+        .default(sql`gen_random_uuid()`),
+    number: varchar("number", { length: 10 }).notNull().unique(),
+    type: varchar("type", { length: 50 }).notNull(),
+    pricePerNight: decimal("price_per_night", { precision: 10, scale: 2 }).notNull(),
+    description: text("description"),
+});
+
+export const roomSchema = createInsertSchema(rooms, {
+    number: z.string().min(1, "Número do quarto é obrigatório"),
+    type: z.string().min(1, "Tipo do quarto é obrigatório"),
+    pricePerNight: z.number().min(0, "Preço deve ser maior que zero"),
+    description: z.string().optional(),
+});
+
+export const reservations = createTable("reservation", {
+    id: varchar("id", { length: 255 })
+        .notNull()
+        .primaryKey()
+        .default(sql`gen_random_uuid()`),
+    customerId: varchar("customer_id", { length: 255 })
+        .notNull()
+        .references(() => customers.id, { onDelete: "cascade" }),
+    roomId: varchar("room_id", { length: 255 })
+        .notNull()
+        .references(() => rooms.id, { onDelete: "cascade" }),
+    checkIn: timestamp("check_in", { mode: "date" }).notNull(),
+    checkOut: timestamp("check_out", { mode: "date" }).notNull(),
+    status: reservationStatusEnum("status").default("confirmed").notNull(),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+});
+
+export const reservationSchema = createInsertSchema(reservations, {
+    customerId: z.string().min(1, "Cliente é obrigatório"),
+    roomId: z.string().min(1, "Quarto é obrigatório"),
+    checkIn: z.date().min(new Date(), "Data de check-in deve ser futura"),
+    checkOut: z.date(),
+    status: z.enum(["confirmed", "canceled", "checked_in", "checked_out"]),
+});
+
+export const paymentMethodEnum = pgEnum("payment_method", [
+    "cash",
+    "card",
+    "transfer"
+]);
+
+export const bills = createTable("bill", {
+    id: varchar("id", { length: 255 })
+        .notNull()
+        .primaryKey()
+        .default(sql`gen_random_uuid()`),
+    reservationId: varchar("reservation_id", { length: 255 })
+        .notNull()
+        .references(() => reservations.id, { onDelete: "cascade" }),
+    total: decimal("total", { precision: 10, scale: 2 }).notNull().default("0"),
+    paid: boolean("paid").default(false),
+    paymentMethod: paymentMethodEnum("payment_method"),
+    paymentDate: timestamp("payment_date", { mode: "date" }),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+});
+
+export const billItems = createTable("bill_item", {
+    id: varchar("id", { length: 255 })
+        .notNull()
+        .primaryKey()
+        .default(sql`gen_random_uuid()`),
+    billId: varchar("bill_id", { length: 255 })
+        .notNull()
+        .references(() => bills.id, { onDelete: "cascade" }),
+    description: varchar("description", { length: 255 }).notNull(),
+    amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+});
+
+export const billItemSchema = createInsertSchema(billItems, {
+    description: z.string().min(1, "Descrição é obrigatória"),
+    amount: z.number().min(0, "Valor deve ser maior que zero"),
+});
+
+export const customersRelations = relations(customers, ({ many }) => ({
+    reservations: many(reservations),
+}));
+
+export const roomsRelations = relations(rooms, ({ many }) => ({
+    reservations: many(reservations),
+}));
+
+export const reservationsRelations = relations(reservations, ({ one }) => ({
+    customer: one(customers, {
+        fields: [reservations.customerId],
+        references: [customers.id],
+    }),
+    room: one(rooms, {
+        fields: [reservations.roomId],
+        references: [rooms.id],
+    }),
+    bill: one(bills, {
+        fields: [reservations.id],
+        references: [bills.reservationId],
+    }),
+}));
+
+export const billsRelations = relations(bills, ({ one, many }) => ({
+    reservation: one(reservations, {
+        fields: [bills.reservationId],
+        references: [reservations.id],
+    }),
+    items: many(billItems),
+}));
+
+export const billItemsRelations = relations(billItems, ({ one }) => ({
+    bill: one(bills, {
+        fields: [billItems.billId],
+        references: [bills.id],
+    }),
+}));
+
+export { createTable, users }
+
+export { waitlistUsers }
