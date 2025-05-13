@@ -1,9 +1,7 @@
 import { relations, sql } from "drizzle-orm";
 import {
-    boolean,
     index,
     integer,
-    jsonb,
     pgEnum,
     pgTableCreator,
     primaryKey,
@@ -15,17 +13,9 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { type AdapterAccount } from "next-auth/adapters";
 import { z } from "zod";
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
-export const createTable = pgTableCreator(
-    (name) => `launchmvpfast-saas-starterkit_${name}`,
-);
+export const createTable = pgTableCreator((name) => `hotel_${name}`);
 
-export const usersRoleEnum = pgEnum("role", ["User", "Admin", "Super Admin"]);
+export const usersRoleEnum = pgEnum("role", ["User", "Admin"]);
 
 export const users = createTable("user", {
     id: varchar("id", { length: 255 }).notNull().primaryKey(),
@@ -36,25 +26,12 @@ export const users = createTable("user", {
     }).default(sql`CURRENT_TIMESTAMP`),
     image: varchar("image", { length: 255 }),
     role: usersRoleEnum("role").default("User").notNull(),
-    isNewUser: boolean("isNewUser").default(true).notNull(),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
     accounts: many(accounts),
-    membersToOrganizations: many(membersToOrganizations),
-    feedback: many(feedback),
 }));
-
-export const userInsertSchema = createInsertSchema(users, {
-    name: z
-        .string()
-        .trim()
-        .min(3, "Name must be at least 3 characters long")
-        .max(50, "Name must be at most 50 characters long"),
-    email: z.string().email(),
-    image: z.string().url(),
-});
 
 export const accounts = createTable(
     "account",
@@ -121,229 +98,73 @@ export const verificationTokens = createTable(
     }),
 );
 
-export const organizations = createTable("organization", {
+// Customer schema
+export const customers = createTable("customer", {
     id: varchar("id", { length: 255 })
         .notNull()
         .primaryKey()
         .default(sql`gen_random_uuid()`),
     name: varchar("name", { length: 255 }).notNull(),
     email: varchar("email", { length: 255 }).notNull(),
-    image: varchar("image", { length: 255 }),
+    phone: varchar("phone", { length: 255 }).notNull(),
+    notes: text("notes"),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
-    ownerId: varchar("ownerId", { length: 255 })
+    updatedAt: timestamp("updatedAt", { mode: "date" })
         .notNull()
-        .references(() => users.id, { onDelete: "cascade" }),
+        .default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const createOrgInsertSchema = createInsertSchema(organizations, {
-    name: z
-        .string()
-        .min(3, "Name must be at least 3 characters long")
-        .max(50, "Name must be at most 50 characters long"),
-    image: z.string().url({ message: "Invalid image URL" }),
-});
-
-export const organizationsRelations = relations(
-    organizations,
-    ({ one, many }) => ({
-        owner: one(users, {
-            fields: [organizations.ownerId],
-            references: [users.id],
-        }),
-        membersToOrganizations: many(membersToOrganizations),
-        subscriptions: one(subscriptions, {
-            fields: [organizations.id],
-            references: [subscriptions.orgId],
-        }),
-    }),
-);
-
-export const membersToOrganizationsRoleEnum = pgEnum("org-member-role", [
-    "Viewer",
-    "Developer",
-    "Billing",
-    "Admin",
-]);
-
-export const membersToOrganizations = createTable(
-    "membersToOrganizations",
-    {
-        id: varchar("id", { length: 255 }).default(sql`gen_random_uuid()`),
-        memberId: varchar("memberId", { length: 255 })
-            .notNull()
-            .references(() => users.id, { onDelete: "cascade" }),
-        memberEmail: varchar("memberEmail", { length: 255 }).notNull(),
-        organizationId: varchar("organizationId", { length: 255 })
-            .notNull()
-            .references(() => organizations.id, { onDelete: "cascade" }),
-        role: membersToOrganizationsRoleEnum("role")
-            .default("Viewer")
-            .notNull(),
-        createdAt: timestamp("createdAt", { mode: "date" })
-            .notNull()
-            .defaultNow(),
-    },
-    (mto) => ({
-        compoundKey: primaryKey({
-            columns: [mto.id, mto.memberId, mto.organizationId],
-        }),
-    }),
-);
-
-export const membersToOrganizationsRelations = relations(
-    membersToOrganizations,
-    ({ one }) => ({
-        member: one(users, {
-            fields: [membersToOrganizations.memberId],
-            references: [users.id],
-        }),
-        organization: one(organizations, {
-            fields: [membersToOrganizations.organizationId],
-            references: [organizations.id],
-        }),
-    }),
-);
-
-export const membersToOrganizationsInsertSchema = createInsertSchema(
-    membersToOrganizations,
-);
-
-export const orgRequests = createTable(
-    "orgRequest",
-    {
-        id: varchar("id", { length: 255 })
-            .notNull()
-            .primaryKey()
-            .default(sql`gen_random_uuid()`),
-        userId: varchar("userId", { length: 255 })
-            .notNull()
-            .references(() => users.id, { onDelete: "cascade" }),
-
-        organizationId: varchar("organizationId", {
-            length: 255,
-        })
-            .notNull()
-            .references(() => organizations.id, { onDelete: "cascade" }),
-        createdAt: timestamp("createdAt", { mode: "date" })
-            .notNull()
-            .defaultNow(),
-    },
-    (or) => ({
-        orgIdIdx: index("orgRequest_organizationId_idx").on(or.organizationId),
-    }),
-);
-
-export const orgRequestsRelations = relations(orgRequests, ({ one }) => ({
-    user: one(users, { fields: [orgRequests.userId], references: [users.id] }),
-    organization: one(organizations, {
-        fields: [orgRequests.organizationId],
-        references: [organizations.id],
-    }),
+export const customersRelations = relations(customers, ({ many }) => ({
+    reservations: many(reservations),
 }));
 
-export const orgRequestInsertSchema = createInsertSchema(orgRequests);
-
-// Feedback schema
-
-export const feedbackLabelEnum = pgEnum("feedback-label", [
-    "Issue",
-    "Idea",
-    "Question",
-    "Complaint",
-    "Feature Request",
-    "Other",
-]);
-
-export const feedbackStatusEnum = pgEnum("feedback-status", [
-    "Open",
-    "In Progress",
-    "Closed",
-]);
-
-export const feedback = createTable("feedback", {
-    id: varchar("id", { length: 255 })
-        .notNull()
-        .primaryKey()
-        .default(sql`gen_random_uuid()`),
-    userId: varchar("userId", { length: 255 })
-        .notNull()
-        .references(() => users.id, { onDelete: "cascade" }),
-    title: varchar("title", { length: 255 }),
-    message: text("message").notNull(),
-    label: feedbackLabelEnum("label").notNull(),
-    status: feedbackStatusEnum("status").default("Open").notNull(),
-    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
-});
-
-export const feedbackRelations = relations(feedback, ({ one }) => ({
-    user: one(users, { fields: [feedback.userId], references: [users.id] }),
-}));
-
-export const feedbackInsertSchema = createInsertSchema(feedback, {
-    title: z
-        .string()
-        .min(3, "Title is too short")
-        .max(255, "Title is too long"),
-    message: z
-        .string()
-        .min(10, "Message is too short")
-        .max(1000, "Message is too long"),
-});
-
-export const feedbackSelectSchema = createSelectSchema(feedback, {
-    title: z
-        .string()
-        .min(3, "Title is too short")
-        .max(255, "Title is too long"),
-    message: z
-        .string()
-        .min(10, "Message is too short")
-        .max(1000, "Message is too long"),
-});
-
-export const webhookEvents = createTable("webhookEvent", {
-    id: varchar("id", { length: 255 })
-        .notNull()
-        .primaryKey()
-        .default(sql`gen_random_uuid()`),
-    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
-    eventName: text("eventName").notNull(),
-    processed: boolean("processed").default(false),
-    body: jsonb("body").notNull(),
-    processingError: text("processingError"),
-});
-
-export const subscriptions = createTable("subscription", {
-    id: varchar("id", { length: 255 })
-        .notNull()
-        .primaryKey()
-        .default(sql`gen_random_uuid()`),
-    lemonSqueezyId: text("lemonSqueezyId").unique().notNull(),
-    orderId: integer("orderId").notNull(),
-    orgId: text("orgId")
-        .notNull()
-        .references(() => organizations.id, { onDelete: "cascade" }),
-    variantId: integer("variantId").notNull(),
-});
-
-export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
-    organization: one(organizations, {
-        fields: [subscriptions.orgId],
-        references: [organizations.id],
-    }),
-}));
-
-export const waitlistUsers = createTable("waitlistUser", {
-    id: varchar("id", { length: 255 })
-        .notNull()
-        .primaryKey()
-        .default(sql`gen_random_uuid()`),
-    email: varchar("email", { length: 255 }).notNull().unique(),
-    name: varchar("name", { length: 255 }).notNull(),
-    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
-});
-
-export const waitlistUsersSchema = createInsertSchema(waitlistUsers, {
-    email: z.string().email("Email must be a valid email address"),
+export const customerInsertSchema = createInsertSchema(customers, {
     name: z.string().min(3, "Name must be at least 3 characters long"),
+    email: z.string().email("Invalid email address"),
+    phone: z.string().min(10, "Phone number must be at least 10 characters long"),
+    notes: z.string().optional(),
 });
+
+// Reservation status enum
+export const reservationStatusEnum = pgEnum("reservation-status", [
+    "Confirmed",
+    "Canceled",
+    "CheckedIn",
+    "CheckedOut",
+]);
+
+// Reservation schema
+export const reservations = createTable("reservation", {
+    id: varchar("id", { length: 255 })
+        .notNull()
+        .primaryKey()
+        .default(sql`gen_random_uuid()`),
+    customerId: varchar("customerId", { length: 255 })
+        .notNull()
+        .references(() => customers.id, { onDelete: "cascade" }),
+    roomNumber: integer("roomNumber").notNull(),
+    checkIn: timestamp("checkIn", { mode: "date" }).notNull(),
+    checkOut: timestamp("checkOut", { mode: "date" }).notNull(),
+    status: reservationStatusEnum("status").default("Confirmed").notNull(),
+    notes: text("notes"),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" })
+        .notNull()
+        .default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const reservationsRelations = relations(reservations, ({ one }) => ({
+    customer: one(customers, {
+        fields: [reservations.customerId],
+        references: [customers.id],
+    }),
+}));
+
+export const reservationInsertSchema = createInsertSchema(reservations, {
+    roomNumber: z.number().min(1, "Room number must be at least 1"),
+    checkIn: z.date(),
+    checkOut: z.date(),
+    notes: z.string().optional(),
+});
+
+export const reservationSelectSchema = createSelectSchema(reservations);
