@@ -32,6 +32,9 @@ export const env = createEnv({
         LEMONSQUEEZY_API_KEY: z.string(),
         LEMONSQUEEZY_STORE_ID: z.string(),
         LEMONSQUEEZY_WEBHOOK_SECRET: z.string(),
+        TWILIO_ACCOUNT_SID: z.string().optional(),
+        TWILIO_AUTH_TOKEN: z.string().optional(),
+        TWILIO_PHONE_NUMBER: z.string().optional(),
     },
 
     /**
@@ -65,6 +68,9 @@ export const env = createEnv({
         LEMONSQUEEZY_API_KEY: process.env.LEMONSQUEEZY_API_KEY,
         LEMONSQUEEZY_STORE_ID: process.env.LEMONSQUEEZY_STORE_ID,
         LEMONSQUEEZY_WEBHOOK_SECRET: process.env.LEMONSQUEEZY_WEBHOOK_SECRET,
+        TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
+        TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
+        TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER,
         NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
         NEXT_PUBLIC_WAITLIST_MODE: process.env.NEXT_PUBLIC_WAITLIST_MODE,
         NEXT_PUBLIC_MAINTENANCE_MODE: process.env.NEXT_PUBLIC_MAINTENANCE_MODE,

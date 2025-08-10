@@ -2,10 +2,10 @@ import { AppPageShell } from "@/app/(app)/_components/page-shell";
 import { dashboardPageConfig } from "@/app/(app)/(user)/dashboard/_constants/page-config";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    ActivityIcon,
-    CreditCardIcon,
-    DollarSignIcon,
-    Users2Icon,
+    CalendarIcon,
+    CarIcon,
+    TruckIcon,
+    WashingMachineIcon,
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -19,56 +19,56 @@ export default function DashboardPage() {
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
-                                Total Revenue
+                                Today's Bookings
                             </CardTitle>
-                            <DollarSignIcon className="h-4 w-4 text-muted-foreground" />
+                            <CalendarIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">$45,231.89</div>
+                            <div className="text-2xl font-bold">24</div>
                             <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
+                                +12% from yesterday
                             </p>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
-                                Subscriptions
+                                Active Services
                             </CardTitle>
-                            <Users2Icon className="h-4 w-4 text-muted-foreground" />
+                            <WashingMachineIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">+3402</div>
+                            <div className="text-2xl font-bold">8</div>
                             <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
+                                4 mobile, 4 center
                             </p>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
-                                Active Now
+                                Fleet Vehicles
                             </CardTitle>
-                            <ActivityIcon className="h-4 w-4 text-muted-foreground" />
+                            <TruckIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">+304</div>
+                            <div className="text-2xl font-bold">5</div>
                             <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
+                                3 active, 2 maintenance
                             </p>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
-                                Sales
+                                Registered Vehicles
                             </CardTitle>
-                            <CreditCardIcon className="h-4 w-4 text-muted-foreground" />
+                            <CarIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">+102304</div>
+                            <div className="text-2xl font-bold">1,247</div>
                             <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
+                                +8.2% from last month
                             </p>
                         </CardContent>
                     </Card>
@@ -76,7 +76,7 @@ export default function DashboardPage() {
 
                 <div className="flex min-h-44 w-full items-center justify-center rounded-md border-2 border-dashed border-border p-4">
                     <p className="text-sm text-muted-foreground">
-                        Your Content here, Above is a dummy data
+                        Car Wash Analytics Dashboard - Connect your data to see real-time insights
                     </p>
                 </div>
             </div>

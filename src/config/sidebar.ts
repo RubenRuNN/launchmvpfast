@@ -2,16 +2,22 @@ import {
     BarChart4Icon,
     BookTextIcon,
     Building2Icon,
+    CalendarIcon,
+    CarIcon,
     ClipboardListIcon,
     CreditCardIcon,
+    KanbanSquareIcon,
     HelpCircleIcon,
     LayoutDashboardIcon,
     MessageSquareIcon,
     PenLineIcon,
     Settings2Icon,
+    TruckIcon,
     UserRoundCheckIcon,
     UserRoundPlusIcon,
     UsersRoundIcon,
+    WashingMachineIcon,
+    MapPinIcon,
 } from "lucide-react";
 import { siteUrls } from "@/config/urls";
 
@@ -71,6 +77,7 @@ const navIds = {
     admin: "admin",
     general: "general",
     org: "org",
+    services: "services",
     resources: "resources",
 };
 
@@ -110,6 +117,11 @@ const navigation: SidebarNavItems[] = [
                 icon: HelpCircleIcon,
                 href: siteUrls.admin.feedbacks,
             },
+            {
+                label: "All Bookings",
+                icon: CalendarIcon,
+                href: siteUrls.admin.bookings,
+            },
         ],
     },
     {
@@ -122,6 +134,16 @@ const navigation: SidebarNavItems[] = [
                 icon: LayoutDashboardIcon,
                 href: siteUrls.dashboard.home,
             },
+            {
+                label: "My Bookings",
+                icon: CalendarIcon,
+                href: siteUrls.bookings.home,
+            },
+            {
+                label: "My Vehicles",
+                icon: CarIcon,
+                href: siteUrls.vehicles.home,
+            },
         ],
     },
     {
@@ -129,6 +151,11 @@ const navigation: SidebarNavItems[] = [
         label: "Organization",
         showLabel: true,
         items: [
+            {
+                label: "Kanban Board",
+                icon: KanbanSquareIcon,
+                href: siteUrls.organization.kanban,
+            },
             {
                 label: "Members",
                 icon: UsersRoundIcon,
@@ -144,6 +171,26 @@ const navigation: SidebarNavItems[] = [
                         href: siteUrls.organization.members.invite,
                     },
                 ],
+            },
+            {
+                label: "Services",
+                icon: WashingMachineIcon,
+                href: siteUrls.organization.services,
+            },
+            {
+                label: "Wash Centers",
+                icon: MapPinIcon,
+                href: siteUrls.organization.washCenters,
+            },
+            {
+                label: "Employees",
+                icon: UsersRoundIcon,
+                href: siteUrls.organization.employees,
+            },
+            {
+                label: "Fleet Vehicles",
+                icon: TruckIcon,
+                href: siteUrls.organization.fleet,
             },
             {
                 label: "Plans & Billing",

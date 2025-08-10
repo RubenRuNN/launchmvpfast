@@ -114,7 +114,7 @@ export const pricingPlans: PrincingPlan[] = [
         id: pricingIds.free,
         title: "Free",
         description:
-            "Everything you need to get started with 10,500 free MAU. No setup fees, monthly fees, or hidden fees.",
+            "Perfect for small car wash businesses getting started. Up to 50 bookings per month.",
         price: {
             monthly: 0,
             yearly: 0,
@@ -127,14 +127,14 @@ export const pricingPlans: PrincingPlan[] = [
         highlight:
             "No credit card required. 30-day money-back guarantee. No hidden fees.",
         buttonHighlighted: false,
-        uniqueFeatures: ["Up to 2,000 machine to machine (M2M) connections"],
+        uniqueFeatures: ["Up to 50 bookings per month", "Basic kanban board", "Email notifications"],
     },
     {
         id: pricingIds.pro,
         badge: "Most Popular",
         title: "Pro",
         description:
-            "Advanced features to help you scale any business without limits.",
+            "Advanced features for growing car wash businesses. Unlimited bookings and SMS notifications.",
         price: {
             monthly: 99,
             yearly: 999,
@@ -148,13 +148,13 @@ export const pricingPlans: PrincingPlan[] = [
         highlight:
             "No credit card required. 30-day money-back guarantee. No hidden fees.",
         buttonHighlighted: true,
-        uniqueFeatures: ["Up to 5,000 machine to machine (M2M) connections"],
+        uniqueFeatures: ["Unlimited bookings", "SMS notifications", "Advanced analytics", "Mobile service management"],
     },
     {
         id: pricingIds.premium,
         title: "Premium",
         description:
-            "For teams with more complex needs requiring the highest levels of support.",
+            "Enterprise solution for large car wash operations with multiple locations and advanced fleet management.",
         price: {
             monthly: 199,
             yearly: 1999,
@@ -168,6 +168,6 @@ export const pricingPlans: PrincingPlan[] = [
         highlight:
             "No credit card required. 30-day money-back guarantee. No hidden fees.",
         buttonHighlighted: false,
-        uniqueFeatures: ["Up to 100,000 machine to machine (M2M) connections"],
+        uniqueFeatures: ["Multi-location management", "Advanced fleet tracking", "Custom integrations", "Priority support"],
     },
 ];

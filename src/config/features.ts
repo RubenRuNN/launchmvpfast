@@ -18,33 +18,33 @@ export type Feature = {
 
 export const features: Feature[] = [
     {
-        title: "Dashboard",
+        title: "Service Management Dashboard",
         description:
-            "launchmvpfast provides a powerful dashboard that allows you to manage your SaaS project. With our starterkits, components, and building guides, you can quickly set up a robust dashboard for your project.",
+            "Comprehensive dashboard to manage all your car wash operations. Track bookings, monitor service progress, and get real-time insights into your business performance.",
         image: "https://utfs.io/f/43bbc3c8-cf3c-4fae-a0eb-9183f1779489-294m81.png",
         imageDark:
             "https://utfs.io/f/fddea366-51c6-45f4-bd54-84d273ad9fb9-1ly324.png",
     },
     {
-        title: "Authentication",
+        title: "Secure Customer Portal",
         description:
-            "launchmvpfast provides a secure authentication system that allows users to sign up and log in to your SaaS. With our starterkits, components, and building guides, you can quickly set up a robust authentication system for your project.",
+            "Secure customer authentication system allowing clients to book services, manage their vehicles, and track service history. Multiple login options including social authentication.",
         image: "https://utfs.io/f/805616c1-22b8-4508-9890-9ba9e2867a41-p24dnn.png",
         imageDark:
             "https://utfs.io/f/9074c0de-d9ea-4c0b-9d49-55dca1253a3f-6ig3yq.png",
     },
     {
-        title: "Organizational level Payments",
+        title: "Kanban Service Management",
         description:
-            "launchmvpfast provides a flexible payment system that allows you to manage your SaaS project's payments. With our starterkits, components, and building guides, you can quickly set up a robust payment system for your project.",
+            "Visual kanban board for managing service workflows. Track bookings from pending to completion with customizable status columns and drag-and-drop functionality.",
         image: "https://utfs.io/f/43bbc3c8-cf3c-4fae-a0eb-9183f1779489-294m81.png",
         imageDark:
             "https://utfs.io/f/fddea366-51c6-45f4-bd54-84d273ad9fb9-1ly324.png",
     },
     {
-        title: "User Management",
+        title: "Fleet & Employee Management",
         description:
-            "launchmvpfast provides a user management system that allows you to manage your SaaS project's users. With our starterkits, components, and building guides, you can quickly set up a robust user management system for your project.",
+            "Complete management system for your mobile fleet vehicles and employees. Assign staff and vehicles to bookings, track availability, and optimize resource allocation.",
         image: "https://utfs.io/f/72a2c035-69e0-46ca-84a8-446e4dabf77c-3koi6e.png",
         imageDark:
             "https://utfs.io/f/89099112-4273-4375-9e44-1b3394600e21-c6ikq1.png",

@@ -8,5 +8,5 @@ export default {
     dbCredentials: {
         connectionString: env.DATABASE_URL,
     },
-    tablesFilter: ["launchmvpfast-saas-starterkit_*"],
+    tablesFilter: ["carwash_*"],
 } satisfies Config;

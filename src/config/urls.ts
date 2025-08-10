@@ -8,8 +8,8 @@
  */
 
 export const siteUrls = {
-    publicUrl: "https://saasdemo.launchmvpfast.com",
-    github: "https://github.com/alifarooq9/launchmvpfast",
+    publicUrl: "https://carwashpro.com",
+    github: "https://github.com/carwashpro/carwash-saas",
     home: "/",
     pricing: "/pricing",
     features: "/features",
@@ -19,10 +19,18 @@ export const siteUrls = {
     changelogs: "/changelogs",
     maintenance: "/maintenance",
     waitlist: "/waitlist",
-    launchmvpfast: "https://www.launchmvpfast.com",
+    carwashpro: "https://www.carwashpro.com",
 
     dashboard: {
         home: "/dashboard",
+    },
+    bookings: {
+        home: "/bookings",
+        create: "/bookings/create",
+    },
+    vehicles: {
+        home: "/vehicles",
+        create: "/vehicles/create",
     },
     feedback: "/feedback",
     organization: {
@@ -32,6 +40,11 @@ export const siteUrls = {
         },
         settings: "/org/settings",
         plansAndBilling: "/org/billing",
+        washCenters: "/org/wash-centers",
+        services: "/org/services",
+        employees: "/org/employees",
+        fleet: "/org/fleet",
+        kanban: "/org/kanban",
     },
     auth: {
         login: "/auth/login",
@@ -44,6 +57,7 @@ export const siteUrls = {
         settings: "/admin/settings",
         waitlist: "/admin/waitlist",
         feedbacks: "/admin/feedbacks",
+        bookings: "/admin/bookings",
         analytics: "https://us.posthog.com/project/12312/dashboard",
     },
     profile: {
